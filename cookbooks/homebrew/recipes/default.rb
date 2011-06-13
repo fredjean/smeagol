@@ -17,7 +17,7 @@ directory "#{ENV['HOME']}/Developer/tmp" do
   action :create
 end
 
-directory "#{ENV['HOME']}/.cinderella" do
+directory "#{ENV['HOME']}/.snuggie" do
   action :create
 end
 
@@ -34,12 +34,12 @@ script "cleaning legacy artifacts" do
     rm ~/.cider.profile
   fi
   if [ -f ~/.cider.profile.custom ]; then
-    mv ~/.cider.profile.custom ~/.cinderella.profile.custom
+    mv ~/.cider.profile.custom ~/.snuggie.profile.custom
   fi
   EOS
 end
 
-template "#{ENV['HOME']}/.cinderella.profile" do
+template "#{ENV['HOME']}/.snuggie.profile" do
   mode   0700
   owner  ENV['USER']
   group  Etc.getgrgid(Process.gid).name
@@ -48,15 +48,15 @@ template "#{ENV['HOME']}/.cinderella.profile" do
 end
 
 %w(bash_profile bashrc zshrc).each do |config_file|
-  execute "include cinderella environment into defaults for ~/.#{config_file}" do
-    command "if [ -f ~/.#{config_file} ]; then echo 'source ~/.cinderella.profile' >> ~/.#{config_file}; fi"
-    not_if  "grep -q 'cinderella.profile' ~/.#{config_file}"
+  execute "include snuggie environment into defaults for ~/.#{config_file}" do
+    command "if [ -f ~/.#{config_file} ]; then echo 'source ~/.snuggie.profile' >> ~/.#{config_file}; fi"
+    not_if  "grep -q 'snuggie.profile' ~/.#{config_file}"
   end
 end
 
-execute "setup cinderella profile sourcing in ~/.profile" do
-  command "echo 'source ~/.cinderella.profile' >> ~/.profile"
-  not_if  "grep -q 'cinderella.profile' ~/.profile"
+execute "setup snuggie profile sourcing in ~/.profile" do
+  command "echo 'source ~/.snuggie.profile' >> ~/.profile"
+  not_if  "grep -q 'snuggie.profile' ~/.profile"
 end
 
 homebrew "git"
@@ -64,7 +64,7 @@ homebrew "git"
 script "ensure the git remote is installed" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     cd ~/Developer
     if [ ! -d ./.git ]; then
       git init
@@ -78,9 +78,9 @@ end
 script "updating homebrew from github" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     PATH=#{ENV['HOME']}/Developer/bin:$PATH; export PATH
-    ~/Developer/bin/brew update >> ~/.cinderella/brew.log 2>&1
+    ~/Developer/bin/brew update >> ~/.snuggie/brew.log 2>&1
   EOS
 end
 

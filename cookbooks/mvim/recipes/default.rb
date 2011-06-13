@@ -6,7 +6,7 @@
 script "installing http://github.com/carlhuda/janus" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     if [ ! -d ~/.vim ]; then
       git clone git://github.com/carlhuda/janus.git ~/.vim
       cd ~/.vim
@@ -35,7 +35,7 @@ end
 script "installed macvim from google code" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     if [ ! -e ~/Developer/bin/mvim ]; then
       rm -rf /Applications/MacVim.app
       curl -L http://github.com/downloads/b4winckler/macvim/MacVim-snapshot-55.tbz -o - | tar xj -
