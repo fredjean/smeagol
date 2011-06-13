@@ -16,7 +16,6 @@ end
 
 script "installing rvm to ~/Developer" do
   interpreter "bash"
-  cwd "#{ENV['HOME']}/Developer"
   code <<-EOS
     source ~/.snuggie.profile
     if [[ ! -d #{RVM_INSTALL_ROOT} ]]; then
