@@ -4,7 +4,7 @@
 #
 
 RVM_INSTALL_ROOT     = "#{ENV['HOME']}/Developer/.rvm"
-DEFAULT_RUBY_VERSION = "1.8.7-p248"
+DEFAULT_RUBY_VERSION = "1.8.7-p299"
 
 template "#{ENV['HOME']}/.rvmrc" do
   mode   0700
@@ -16,6 +16,7 @@ end
 
 script "installing rvm to ~/Developer" do
   interpreter "bash"
+  cwd "#{ENV['HOME']}/Developer"
   code <<-EOS
     source ~/.snuggie.profile
     if [[ ! -d #{RVM_INSTALL_ROOT} ]]; then
@@ -51,10 +52,7 @@ script "ensuring a default ruby is set" do
   interpreter "bash"
   code <<-EOS
     source ~/.snuggie.profile
-    `which ruby | grep -q rvm`
-    if [ $? -ne 0 ]; then
-      rvm use #{DEFAULT_RUBY_VERSION} --default
-    fi
+    rvm use #{DEFAULT_RUBY_VERSION} --default
   EOS
 end
 
@@ -62,7 +60,7 @@ directory "#{ENV['HOME']}/Developer/.rvm/gemsets" do
   action 'create'
 end
 
-template "#{ENV['HOME']}/Developer/.rvm/gemsets/default.gems" do
+template "#{ENV['HOME']}/Developer/.rvm/gemsets/defaults.gems" do
   source "default.gems.erb"
 end
 
@@ -70,7 +68,8 @@ script "ensuring default rubygems are installed" do
   interpreter "bash"
   code <<-EOS
     source ~/.snuggie.profile
-    rvm gemset load ~/Developer/.rvm/gemsets/default.gems >> ~/.snuggie/ruby.log 2>&1
+    rvm use #{DEFAULT_RUBY_VERSION}@global --create >> ~/.snuggie/ruby.log 2>&1
+    rvm gemset load ~/Developer/.rvm/gemsets/defaults.gems >> ~/.snuggie/ruby.log 2>&1
   EOS
 end
 
