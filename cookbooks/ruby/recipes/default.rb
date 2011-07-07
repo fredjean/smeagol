@@ -29,6 +29,19 @@ script "installing rvm to ~/Developer" do
   EOS
 end
 
+script "ensure that .rvm is linked into the home directory." do
+  interpreter "bash"
+  code <<-EOS
+    source ~/.snuggie.profile
+    if [[ ! -L ~/.rvm ]]; then
+      if [[ -d ~/.rvm ]]; then
+        rm -rf ~/.rvm
+      fi
+      ln -s ~/Developer/.rvm ~/.rvm
+    fi
+  EOS
+end
+
 script "updating rvm to the latest stable version" do
   interpreter "bash"
   code <<-EOS
@@ -73,6 +86,16 @@ script "ensuring default rubygems are installed" do
   EOS
 end
 
+script "install pow" do
+  interpreter "bash"
+  code <<-EOS
+    source ~/.snuggie.profile
+    if [[ ! -d ~/.pow ]]; then
+      curl get.pow.cx | sh
+    fi
+  EOS
+end
+
 execute "cleanup rvm build artifacts" do
   command "find ~/Developer/.rvm/src -depth 1 | grep -v src/rvm | xargs rm -rf "
 end
@@ -85,4 +108,3 @@ template "#{ENV['HOME']}/.rdebugrc" do
     source "dot.rdebugrc.erb"
 end
 
-homebrew "rpg"
