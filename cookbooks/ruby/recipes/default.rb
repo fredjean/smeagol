@@ -24,7 +24,7 @@ script "installing rvm to ~/Developer" do
         rm -rf ./rvm
       fi
       git clone git://github.com/wayneeseguin/rvm.git >> ~/.snuggie/ruby.log
-      cd rvm && ./install >> ~/.snuggie/ruby.log
+      cd #{ENV['HOME']}/Developer/rvm && ./install >> ~/.snuggie/ruby.log
     fi
   EOS
 end
