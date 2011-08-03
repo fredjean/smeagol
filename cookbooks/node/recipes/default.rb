@@ -17,8 +17,8 @@ script "configuring nvm" do
     if [ ! -d ./.nvm ]; then
       git clone git://github.com/creationix/nvm.git .nvm >> ~/.snuggie/bootstrap.log
       source #{ENV['HOME']}/Developer/.nvm/nvm.sh        >> ~/.snuggie/bootstrap.log
-      nvm install v0.4.1                                 >> ~/.snuggie/bootstrap.log
-      nvm use v0.4.1                                     >> ~/.snuggie/bootstrap.log
+      nvm install v0.4.10                                >> ~/.snuggie/bootstrap.log
+      nvm use v0.4.10                                     >> ~/.snuggie/bootstrap.log
       curl http://npmjs.org/install.sh | sh              >> ~/.snuggie/bootstrap.log
     fi
   EOS
