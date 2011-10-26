@@ -13,3 +13,4 @@ require root + '/providers/homebrew'
 homebrew_db "memcached"
 homebrew_db "postgresql"
 homebrew_db "mysql"
+homebrew_db "memcachedb"
