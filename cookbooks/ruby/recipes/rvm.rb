@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: ruby
-# Recipe:: default
+# Recipe:: rvm
 #
 
 RVM_INSTALL_ROOT     = "#{ENV['HOME']}/Developer/.rvm"
-DEFAULT_RUBY_VERSION = "1.8.7-p299"
+DEFAULT_RUBY_VERSION = "1.8.7-p248"
 
 template "#{ENV['HOME']}/.rvmrc" do
   mode   0700
@@ -17,26 +17,13 @@ end
 script "installing rvm to ~/Developer" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
+    source ~/.cinderella.profile
     if [[ ! -d #{RVM_INSTALL_ROOT} ]]; then
       if [[ -d ./rvm ]]; then
         rm -rf ./rvm
       fi
-      git clone git://github.com/wayneeseguin/rvm.git >> ~/.snuggie/ruby.log
-      cd #{ENV['HOME']}/Developer/rvm && ./install >> ~/.snuggie/ruby.log
-    fi
-  EOS
-end
-
-script "ensure that .rvm is linked into the home directory." do
-  interpreter "bash"
-  code <<-EOS
-    source ~/.snuggie.profile
-    if [[ ! -L ~/.rvm ]]; then
-      if [[ -d ~/.rvm ]]; then
-        rm -rf ~/.rvm
-      fi
-      ln -s ~/Developer/.rvm ~/.rvm
+      git clone git://github.com/wayneeseguin/rvm.git #{ENV['HOME']}/Developer/rvm >> ~/.cinderella/ruby.log
+      cd #{ENV['HOME']}/Developer/rvm && ./install >> ~/.cinderella/ruby.log
     fi
   EOS
 end
@@ -44,15 +31,15 @@ end
 script "updating rvm to the latest stable version" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
-    rvm update --head >> ~/.snuggie/ruby.log 2>&1
+    source ~/.cinderella.profile
+    rvm update --head >> ~/.cinderella/ruby.log 2>&1
   EOS
 end
 
 script "installing ruby" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
+    source ~/.cinderella.profile
     `rvm list | grep -q '#{DEFAULT_RUBY_VERSION}'`
     if [ $? -ne 0 ]; then
       rvm install #{DEFAULT_RUBY_VERSION}
@@ -63,8 +50,11 @@ end
 script "ensuring a default ruby is set" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
-    rvm use #{DEFAULT_RUBY_VERSION} --default
+    source ~/.cinderella.profile
+    `which ruby | grep -q rvm`
+    if [ $? -ne 0 ]; then
+      rvm use #{DEFAULT_RUBY_VERSION} --default
+    fi
   EOS
 end
 
@@ -72,26 +62,15 @@ directory "#{ENV['HOME']}/Developer/.rvm/gemsets" do
   action 'create'
 end
 
-template "#{ENV['HOME']}/Developer/.rvm/gemsets/defaults.gems" do
+template "#{ENV['HOME']}/Developer/.rvm/gemsets/default.gems" do
   source "default.gems.erb"
 end
 
 script "ensuring default rubygems are installed" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
-    rvm use #{DEFAULT_RUBY_VERSION}@global --create >> ~/.snuggie/ruby.log 2>&1
-    rvm gemset load ~/Developer/.rvm/gemsets/defaults.gems >> ~/.snuggie/ruby.log 2>&1
-  EOS
-end
-
-script "install pow" do
-  interpreter "bash"
-  code <<-EOS
-    source ~/.snuggie.profile
-    if [[ ! -d ~/.pow ]]; then
-      curl get.pow.cx | sh
-    fi
+    source ~/.cinderella.profile
+    rvm gemset load ~/Developer/.rvm/gemsets/default.gems >> ~/.cinderella/ruby.log 2>&1
   EOS
 end
 
@@ -106,3 +85,5 @@ end
 template "#{ENV['HOME']}/.rdebugrc" do
     source "dot.rdebugrc.erb"
 end
+
+homebrew "rpg"

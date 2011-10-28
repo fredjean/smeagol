@@ -26,11 +26,19 @@ script "configuring nvm and node #{DEFAULT_NODE_VERSION}" do
     source ~/.snuggie.profile
     cd #{ENV['HOME']}/Developer
     if [ ! -d ./.nvm ]; then
+<<<<<<< HEAD
       git clone git://github.com/creationix/nvm.git .nvm >> ~/.snuggie/bootstrap.log
       source #{ENV['HOME']}/Developer/.nvm/nvm.sh        >> ~/.snuggie/bootstrap.log
-      nvm install #{DEFAULT_NODE_VERSION}                >> ~/.snuggie/bootstrap.log
-      nvm use #{DEFAULT_NODE_VERSION}                    >> ~/.snuggie/bootstrap.log
+      nvm install v0.4.10                                >> ~/.snuggie/bootstrap.log
+      nvm use v0.4.10                                     >> ~/.snuggie/bootstrap.log
       curl http://npmjs.org/install.sh | sh              >> ~/.snuggie/bootstrap.log
+=======
+      git clone git://github.com/creationix/nvm.git .nvm >> ~/.cinderella/node.log
+      source #{ENV['HOME']}/Developer/.nvm/nvm.sh        >> ~/.cinderella/node.log
+      nvm install #{DEFAULT_NODE_VERSION}                >> ~/.cinderella/node.log
+      nvm alias default #{DEFAULT_NODE_VERSION}          >> ~/.cinderella/node.log
+      curl http://npmjs.org/install.sh | clean=yes sh    >> ~/.cinderella/node.log
+>>>>>>> atmos/master
     fi
   EOS
 end

@@ -21,12 +21,17 @@ if [[ -f <%= @home %>/Developer/.nvm/nvm.sh ]]; then
   source <%= @home %>/Developer/.nvm/nvm.sh
 fi
 
+<<<<<<< HEAD
 if [[ -f <%= @home %>/.snuggie.profile.custom ]]; then
   source ~/.snuggie.profile.custom
-fi
-
+=======
 if [[ -x <%= @home %>/Developer/.rbenv/bin/rbenv ]]; then
   eval "$(rbenv init -)"
+fi
+
+if [[ -f <%= @home %>/.cinderella.profile.custom ]]; then
+  source ~/.cinderella.profile.custom
+>>>>>>> atmos/master
 fi
 
 if [ -f `brew --prefix`/etc/bash_completion ]; then

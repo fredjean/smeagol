@@ -20,7 +20,7 @@ class Chef
         end
 
         def install_package(name, version)
-          run_brew_command("/usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} install #{name}")
+          run_brew_command("brew info #{name} | grep -q \"Not installed\"; if [ $? -eq 0 ]; then /usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} install #{name}; fi")
         end
 
         def update_package(name, version)
@@ -70,8 +70,8 @@ class Chef
               system("#{PREFIX}/bin/initdb #{PREFIX}/var/postgres > /dev/null 2>&1")
             end
           when "mysql"
-            unless ::File.directory?("#{PREFIX}/var/mysql")
-              prefix = `brew --prefix mysql`.chomp
+            unless ::File.directory?("#{PREFIX}/var/mysql/mysql")
+              prefix = `#{PREFIX}/bin/brew --prefix mysql`.chomp
               system("unset TMPDIR; #{PREFIX}/bin/mysql_install_db --user=#{ENV['USER']} --basedir=#{prefix} --datadir=#{PREFIX}/var/mysql --tmpdir=/tmp > /dev/null")
             end
           else
