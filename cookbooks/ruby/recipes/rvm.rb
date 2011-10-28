@@ -17,13 +17,13 @@ end
 script "installing rvm to ~/Developer" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     if [[ ! -d #{RVM_INSTALL_ROOT} ]]; then
       if [[ -d ./rvm ]]; then
         rm -rf ./rvm
       fi
-      git clone git://github.com/wayneeseguin/rvm.git #{ENV['HOME']}/Developer/rvm >> ~/.cinderella/ruby.log
-      cd #{ENV['HOME']}/Developer/rvm && ./install >> ~/.cinderella/ruby.log
+      git clone git://github.com/wayneeseguin/rvm.git #{ENV['HOME']}/Developer/rvm >> ~/.snuggie/ruby.log
+      cd #{ENV['HOME']}/Developer/rvm && ./install >> ~/.snuggie/ruby.log
     fi
   EOS
 end
@@ -31,15 +31,15 @@ end
 script "updating rvm to the latest stable version" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
-    rvm update --head >> ~/.cinderella/ruby.log 2>&1
+    source ~/.snuggie.profile
+    rvm update --head >> ~/.snuggie/ruby.log 2>&1
   EOS
 end
 
 script "installing ruby" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     `rvm list | grep -q '#{DEFAULT_RUBY_VERSION}'`
     if [ $? -ne 0 ]; then
       rvm install #{DEFAULT_RUBY_VERSION}
@@ -50,7 +50,7 @@ end
 script "ensuring a default ruby is set" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
+    source ~/.snuggie.profile
     `which ruby | grep -q rvm`
     if [ $? -ne 0 ]; then
       rvm use #{DEFAULT_RUBY_VERSION} --default
@@ -69,8 +69,8 @@ end
 script "ensuring default rubygems are installed" do
   interpreter "bash"
   code <<-EOS
-    source ~/.cinderella.profile
-    rvm gemset load ~/Developer/.rvm/gemsets/default.gems >> ~/.cinderella/ruby.log 2>&1
+    source ~/.snuggie.profile
+    rvm gemset load ~/Developer/.rvm/gemsets/default.gems >> ~/.snuggie/ruby.log 2>&1
   EOS
 end
 

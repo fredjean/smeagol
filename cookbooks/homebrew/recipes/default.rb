@@ -82,7 +82,7 @@ script "updating homebrew from github" do
   code <<-EOS
     source ~/.snuggie.profile
     PATH=#{ENV['HOME']}/Developer/bin:$PATH; export PATH
-    (cd ~/Developer && git fetch -q origin && git reset --hard #{ENV['CINDERELLA_RELEASE'] || HOMEBREW_DEFAULT_SHA1}) >> ~/.cinderella/brew.log 2>&1
+    (cd ~/Developer && git fetch -q origin && git reset --hard #{ENV['CINDERELLA_RELEASE'] || HOMEBREW_DEFAULT_SHA1}) >> ~/.snuggie/brew.log 2>&1
   EOS
 end
 
