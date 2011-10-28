@@ -7,7 +7,7 @@ class Chef
         super(name, run_context)
         @resource_name = :homebrew
         @provider      = Chef::Provider::Package::Homebrew
-        @allowed_actions = [ :install, :remove ]
+        @allowed_actions = [ :install, :update, :remove ]
       end
     end
 
