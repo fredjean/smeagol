@@ -24,7 +24,7 @@ class Chef
         end
 
         def update_package(name, version)
-          run_brew_command("/usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} install #{name}")
+          run_brew_command("/usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} upgrade #{name}")
         end
 
         def remove_package(name, version)
