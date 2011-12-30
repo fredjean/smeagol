@@ -1,32 +1,36 @@
-PATH="<%= @home %>/Developer/bin:<%= @home %>/Developer/Cellar/python/2.7.1/bin:<%= @home %>/Developer/share/python:<%= @home %>/Developer/sbin:$PATH"; export PATH
-PATH="<%= @home %>/Developer/.rbenv/bin:$PATH"; export PATH
-MANPATH="<%= @home %>/Developer/share/man:$MANPATH"; export MANPATH
-CFLAGS="-I<%= @home %>/Developer/include"; export CFLAGS
-CPPFLAGS="-I<%= @home %>/Developer/include"; export CPPFLAGS
-CXXFLAGS="-I<%= @home %>/Developer/include"; export CXXFLAGS
-LDFLAGS="-L<%= @home %>/Developer/lib"; export LDFLAGS
-HOMEBREW_TEMP="<%= @home %>/Developer/tmp"; export HOMEBREW_TEMP
+SMEAGOL_ROOT_DIR=<%= @root %>; export SMEAGOL_ROOT_DIR
+PATH="$SMEAGOL_ROOT_DIR/bin:$SMEAGOL_ROOT_DIR/Cellar/python/2.7.1/bin:$SMEAGOL_ROOT_DIR/share/python:$SMEAGOL_ROOT_DIR/sbin:$PATH"; export PATH
+PATH="$SMEAGOL_ROOT_DIR/.rbenv/bin:$PATH"; export PATH
+MANPATH="$SMEAGOL_ROOT_DIR/share/man:$MANPATH"; export MANPATH
+CFLAGS="-I$SMEAGOL_ROOT_DIR/include"; export CFLAGS
+CPPFLAGS="-I$SMEAGOL_ROOT_DIR/include"; export CPPFLAGS
+CXXFLAGS="-I$SMEAGOL_ROOT_DIR/include"; export CXXFLAGS
+LDFLAGS="-L$SMEAGOL_ROOT_DIR/lib"; export LDFLAGS
+HOMEBREW_TEMP="$SMEAGOL_ROOT_DIR/tmp"; export HOMEBREW_TEMP
+RBENV_ROOT="$SMEAGOL_ROOT_DIR/.rbenv"; export RBENV_ROOT
+
+CC=/usr/bin/gcc-4.2; export CC
 
 export CONFIGURE_ARGS="--with-cflags='$CFLAGS' --with-ldflags='$LDFLAGS'"
 
-if [[ -s <%= @home %>/Developer/.rvm/scripts/rvm ]] ; then
-  source <%= @home %>/Developer/.rvm/scripts/rvm
+if [[ -s $SMEAGOL_ROOT_DIR/.rvm/scripts/rvm ]] ; then
+  source $SMEAGOL_ROOT_DIR/.rvm/scripts/rvm
 fi
 
-if [[ -d <%= @home %>/Developer/Cellar/python/2.7/bin ]]; then
+if [[ -d $SMEAGOL_ROOT_DIR/Cellar/python/2.7/bin ]]; then
   export PATH=~/Developer/Cellar/python/2.7/bin:$PATH
 fi
 
-if [[ -f <%= @home %>/Developer/.nvm/nvm.sh ]]; then
-  source <%= @home %>/Developer/.nvm/nvm.sh
+if [[ -f $SMEAGOL_ROOT_DIR/.nvm/nvm.sh ]]; then
+  source $SMEAGOL_ROOT_DIR/.nvm/nvm.sh
+fi
+
+if [[ -x $SMEAGOL_ROOT_DIR/.rbenv/bin/rbenv ]]; then
+  eval "$(rbenv init -)"
 fi
 
 if [[ -f <%= @home %>/.snuggie.profile.custom ]]; then
-  source ~/.snuggie.profile.custom
-fi
-
-if [[ -x <%= @home %>/Developer/.rbenv/bin/rbenv ]]; then
-  eval "$(rbenv init -)"
+  source ~/.cinderella.profile.custom
 fi
 
 if [ -f `brew --prefix`/etc/bash_completion ]; then

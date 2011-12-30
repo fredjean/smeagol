@@ -4,7 +4,8 @@
 #
 #
 #
-DEFAULT_NODE_VERSION = "v0.4.11"
+DEFAULT_NODE_VERSION = "v0.6.1"
+SMEAGOL_ROOT_DIR = ENV['SMEAGOL_ROOT_DIR'] || "#{ENV['HOME']}/Developer"
 
 root = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "homebrew"))
 
@@ -23,14 +24,14 @@ end
 script "configuring nvm and node #{DEFAULT_NODE_VERSION}" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
-    cd #{ENV['HOME']}/Developer
+    source #{SMEAGOL_ROOT_DIR}/snuggie.profile
+    cd #{SMEAGOL_ROOT_DIR}
     if [ ! -d ./.nvm ]; then
-      git clone git://github.com/creationix/nvm.git .nvm >> ~/.snuggie/bootstrap.log
-      source #{ENV['HOME']}/Developer/.nvm/nvm.sh        >> ~/.snuggie/bootstrap.log
-      nvm install #{DEFAULT_NODE_VERSION}                >> ~/.snuggie/bootstrap.log
-      nvm use #{DEFAULT_NODE_VERSION}                    >> ~/.snuggie/bootstrap.log
-      curl http://npmjs.org/install.sh | sh              >> ~/.snuggie/bootstrap.log
+      git clone git://github.com/creationix/nvm.git .nvm >> ~/.snuggie/node.log
+      source #{SMEAGOL_ROOT_DIR}/.nvm/nvm.sh        >> ~/.snuggie/node.log
+      nvm install #{DEFAULT_NODE_VERSION}                >> ~/.snuggie/node.log
+      nvm alias default #{DEFAULT_NODE_VERSION}          >> ~/.snuggie/node.log
+      curl http://npmjs.org/install.sh | clean=yes sh    >> ~/.snuggie/node.log
     fi
   EOS
 end

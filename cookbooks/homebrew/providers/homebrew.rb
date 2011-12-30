@@ -5,11 +5,11 @@ class Chef
   class Provider
     class Package
       class Homebrew < ::Chef::Provider::Package
-        PREFIX   = "#{ENV['HOME']}/Developer"
+        PREFIX   = ENV['SMEAGOL_ROOT_DIR'] || "#{ENV['HOME']}/Developer"
         HOMEBREW = "#{PREFIX}/bin/brew"
 
         def latest_version_for(name)
-          %x{#{HOMEBREW} info #{name}| head -n1 | awk '{print $2}'}.chomp
+          %x{#{HOMEBREW} info #{name}| grep files | head -n1 | awk '{print $1}'}.chomp
         end
 
         def load_current_resource
@@ -20,7 +20,7 @@ class Chef
         end
 
         def install_package(name, version)
-          run_brew_command("brew info #{name} | grep -q \"Not installed\"; if [ $? -eq 0 ]; then /usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} install #{name}; fi")
+          run_brew_command("#{HOMEBREW} info #{name} | grep -q \"Not installed\"; if [ $? -eq 0 ]; then /usr/bin/env HOMEBREW_TEMP=#{PREFIX}/tmp #{HOMEBREW} install #{name}; fi")
         end
 
         def update_package(name, version)
@@ -48,6 +48,11 @@ class Chef
             "postgresql" => "org.postgresql.postgres.plist" }[name]
         end
 
+        def latest_version_for(name)
+          path = %x{#{HOMEBREW} info #{name}| grep files | head -n1 | awk '{print $1}'}.chomp
+          path.split('/').last
+        end
+
         def plist_fullpath_for(name)
           "#{PREFIX}/Cellar/#{name}/#{latest_version_for(name)}/#{plist_for(name)}"
         end
@@ -56,9 +61,9 @@ class Chef
           Chef::Log.info("Configuring #{name} to automatically start on login")
           destination_plist = "#{ENV['HOME']}/Library/LaunchAgents/#{plist_for(name)}"
           system("mkdir -p #{ENV['HOME']}/Library/LaunchAgents")
-          system("launchctl unload -w -F #{destination_plist} >/dev/null 2>&1")
-          system("cp -f #{plist_fullpath_for(name)} #{destination_plist} >/dev/null 2>&1")
-          system("launchctl load -w -F #{destination_plist} >/dev/null 2>&1")
+          system("launchctl unload -w -F #{destination_plist} > /dev/null 2>&1")
+          system("cp -f #{plist_fullpath_for(name)} #{destination_plist}")
+          system("launchctl load -w -F #{destination_plist}")
         end
 
         def install_package(name, version)

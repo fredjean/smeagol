@@ -7,15 +7,17 @@ HOMEBREW_DEFAULT_SHA1 = '05209f7c75f693edf23d992b5a00409520d36de2'
 
 root = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
+SMEAGOL_ROOT_DIR = ENV['SMEAGOL_ROOT_DIR'] || "#{ENV['HOME']}/Developer"
+
 require root + '/resources/homebrew'
 require root + '/providers/homebrew'
 require 'etc'
 
-directory "#{ENV['HOME']}/Developer" do
+directory SMEAGOL_ROOT_DIR do
   action :create
 end
 
-directory "#{ENV['HOME']}/Developer/tmp" do
+directory "#{SMEAGOL_ROOT_DIR}/tmp" do
   action :create
 end
 
@@ -23,10 +25,14 @@ directory "#{ENV['HOME']}/.snuggie" do
   action :create
 end
 
+directory "#{ENV['HOME']}/Library/Caches/Homebrew" do
+  action :create
+end
+
 execute "download homebrew installer" do
   command "/usr/bin/curl -sfL http://github.com/mxcl/homebrew/tarball/master | /usr/bin/tar xz -m --strip 1"
-  cwd     "#{ENV['HOME']}/Developer"
-  not_if  "test -e ~/Developer/bin/brew"
+  cwd     "#{SMEAGOL_ROOT_DIR}"
+  not_if  "test -e #{SMEAGOL_ROOT_DIR}/bin/brew"
 end
 
 script "cleaning legacy artifacts" do
@@ -41,23 +47,23 @@ script "cleaning legacy artifacts" do
   EOS
 end
 
-template "#{ENV['HOME']}/.snuggie.profile" do
+template "#{SMEAGOL_ROOT_DIR}/snuggie.profile" do
   mode   0700
   owner  ENV['USER']
   group  Etc.getgrgid(Process.gid).name
   source "dot.profile.erb"
-  variables({ :home => ENV['HOME'] })
+  variables({ :home => ENV['HOME'], :root => SMEAGOL_ROOT_DIR })
 end
 
 %w(bash_profile bashrc zshrc).each do |config_file|
   execute "include snuggie environment into defaults for ~/.#{config_file}" do
-    command "if [ -f ~/.#{config_file} ]; then echo 'source ~/.snuggie.profile' >> ~/.#{config_file}; fi"
+    command "if [ -f ~/.#{config_file} ]; then echo 'source #{SMEAGOL_ROOT_DIR}/snuggie.profile' >> ~/.#{config_file}; fi"
     not_if  "grep -q 'snuggie.profile' ~/.#{config_file}"
   end
 end
 
-execute "setup snuggie profile sourcing in ~/.profile" do
-  command "echo 'source ~/.snuggie.profile' >> ~/.profile"
+execute "setup cinderella profile sourcing in ~/.profile" do
+  command "echo 'source #{SMEAGOL_ROOT_DIR}/snuggie.profile' >> ~/.profile"
   not_if  "grep -q 'snuggie.profile' ~/.profile"
 end
 
@@ -66,8 +72,8 @@ homebrew "git"
 script "ensure the git remote is installed" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
-    cd ~/Developer
+    source #{SMEAGOL_ROOT_DIR}/snuggie.profile
+    cd #{SMEAGOL_ROOT_DIR}
     if [ ! -d ./.git ]; then
       git init
       git remote add origin git://github.com/mxcl/homebrew.git
@@ -80,9 +86,9 @@ end
 script "updating homebrew from github" do
   interpreter "bash"
   code <<-EOS
-    source ~/.snuggie.profile
+    source #{SMEAGOL_ROOT_DIR}/snuggie.profile
     PATH=#{ENV['HOME']}/Developer/bin:$PATH; export PATH
-    (cd ~/Developer && git fetch -q origin && git reset --hard #{ENV['CINDERELLA_RELEASE'] || HOMEBREW_DEFAULT_SHA1}) >> ~/.snuggie/brew.log 2>&1
+    (cd #{SMEAGOL_ROOT_DIR} && git fetch -q origin && git reset --hard #{ENV['CINDERELLA_RELEASE'] || HOMEBREW_DEFAULT_SHA1}) >> ~/.snuggie/brew.log 2>&1
   EOS
 end
 
